@@ -1,6 +1,4 @@
-<%= rc_form_for(@article) do |f| %>
-  <%= f.robot_tags request.remote_ip %>
-
+<%= robot_catcher_form_for(@article, request.remote_ip) do |f| %>
   <% if @article.errors.any? %>
     <div id="error_explanation">
       <h2><%= pluralize(@article.errors.count, "error") %> prohibited this article from being saved:</h2>
@@ -13,15 +11,17 @@
     </div>
   <% end %>
 
-  <div class="field">
+  <div>
     <%= f.label :title %><br>
     <%= f.text_field :title %>
   </div>
-  <div class="field">
+
+  <div>
     <%= f.label :text %><br>
     <%= f.text_area :text %>
   </div>
-  <div class="actions">
+
+  <div>
     <%= f.submit %>
   </div>
 <% end %>

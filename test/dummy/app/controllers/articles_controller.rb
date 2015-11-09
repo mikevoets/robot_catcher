@@ -22,7 +22,7 @@ class ArticlesController < ApplicationController
   # POST /articles
   def create
     @article = Article.new(article_params)
-    
+
     if @article.robot?(request.remote_ip, params)
       redirect_to @article, notice: 'Stupid robot.'
       return
