@@ -23,7 +23,7 @@ class ArticlesController < ApplicationController
   def create
     @article = Article.new(article_params)
 
-    if @article.robot?(request.remote_ip, params)
+    if @article.robot?(params, request.remote_ip)
       redirect_to @article, notice: 'Stupid robot.'
       return
     end
@@ -37,7 +37,7 @@ class ArticlesController < ApplicationController
 
   # PATCH/PUT /articles/1
   def update
-    if @article.robot?(request.remote_ip, params)
+    if @article.robot?(params, request.remote_ip)
       redirect_to @article, notice: 'Stupid robot.'
       return
     end

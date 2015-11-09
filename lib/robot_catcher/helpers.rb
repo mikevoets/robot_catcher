@@ -11,7 +11,7 @@ module RobotCatcher
           if method_name.eql? :label
             super(label, *args)
           else
-            hash_tag = Digest::MD5.hexdigest(label.to_s + @spinner + "robot_catcher")
+            hash_tag = Digest::MD5.hexdigest(label.to_s + @spinner + "robotcatcher")
             @template.text_field_tag(hash_tag, nil, :style=>"display:none") +
              super(label, *args)
            end
@@ -29,7 +29,8 @@ module RobotCatcher
         options[:builder] = RobotCatcher::Helpers::FormBuilder
         
         timestamp = Time.now.to_i.to_s 
-        spinner = Digest::MD5.hexdigest(timestamp + ip.to_s + "robot_catcher")
+        spinner = Digest::MD5.hexdigest(timestamp + ip.to_s + "robotcatcher")
+        
         options[:spinner] = spinner
 
         raise ArgumentError, "Missing block" unless block_given?

@@ -16,14 +16,18 @@ module RobotCatcher
             end
 
             spinner = params["spinner"]
-            
+
             hash_spinner = Digest::MD5.hexdigest(timestamp + ip.to_s + "robotcatcher")
 
             if spinner.nil? or spinner != hash_spinner
               return true
             end
 
-            to_be_validated = params.select {|k,v| @@rc_params.include? k}
+            object_name   = self.class.name.downcase
+            object_params = params.include?(object_name) && \
+              params[object_name].is_a?(Hash) ? params[object_name] : params
+            
+            to_be_validated = object_params.select {|k,v| @@rc_params.include? k.to_sym}
 
             if to_be_validated.length != @@rc_params.length
               return true
