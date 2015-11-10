@@ -7,11 +7,11 @@ require "robot_catcher/version"
 Gem::Specification.new do |s|
   s.name        = "robot_catcher"
   s.version     = RobotCatcher::VERSION
-  s.authors     = ["Maikovich"]
-  s.email       = ["febrisnorvegia@gmail.com"]
-  s.homepage    = "TODO"
-  s.summary     = "TODO: Summary of RobotCatcher."
-  s.description = "TODO: Description of RobotCatcher."
+  s.authors     = ["Mike Voets"]
+  s.email       = ["mike@jupiter.no"]
+  s.homepage    = "None"
+  s.summary     = "Form plugin for catching of bots."
+  s.description = "RobotCatcher is a small form plugin that uses several kinds of hashing to consider whether a form has been filled out by a bot or a human being. "
   s.license     = "MIT"
 
   s.files = Dir["{app,config,db,lib}/**/*", "MIT-LICENSE", "Rakefile", "README.rdoc"]

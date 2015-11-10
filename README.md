@@ -18,7 +18,7 @@ project.
 
 ## DESCRIPTION
 
-**RobotCatcher** is a small form extension that uses several kinds of hashing to
+**RobotCatcher** is a small form plugin that uses several kinds of hashing to
 consider whether a form has been filled out by a bot or a human being. 
 
 ## HOW TO USE
