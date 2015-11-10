@@ -89,7 +89,7 @@ spinner, timestamp, etc.) that the robot catcher checks. See the example below.
 
 NB: This requires some knowledge about the difference between what `rc_form_for`
 and `rc_form_tag` generates. As for in the example given in the front-end section 
-with `rc_form_tag`, the params hash will include no `:article` key, so an new 
+with `rc_form_tag`, the params hash will include no `:article` key, so a new 
 article object is made by passing in the *raw* `params` hash (since this contains 
 the right attribute keys and values). Anyway, if you want to do it the Rails way,
 use `rc_form_for` like in the example above.
