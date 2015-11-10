@@ -64,13 +64,13 @@ is that the model class is a child of ActiveRecord::Base.
 		robot_catch :title, :text
 	end
 
-
 #### In the controller
 
 In the current version, catching robots is done by using the `robot?` method on
-a model object instance. The arguments are the params hash (technically a
-ActionController::Parameters instance), and the request ip address. See the 
-example below. 
+a model object. The arguments are the **original** params hash 
+(technically a ActionController::Parameters instance), and the request ip address. 
+It be the original params hash because that hash contains the information (i.e. 
+spinner, timestamp, etc.) that the robot catcher checks. See the example below. 
 
 	def create
 	    @article = Article.new(params[:article])
@@ -86,6 +86,13 @@ example below.
 	      render :new
 	    end
   	end
+
+NB: This requires some knowledge about the difference between what `rc_form_for`
+and `rc_form_tag` generates. As for in the example given in the front-end section 
+with `rc_form_tag`, the params hash will include no `:article` key, so an new 
+article object is made by passing in the *raw* `params` hash (since this contains 
+the right attribute keys and values). Anyway, if you want to do it the Rails way,
+use `rc_form_for` like in the example above.
 
 ## UPCOMING NEXT
 + Store robot catches in database
