@@ -3,7 +3,7 @@ module RobotCatcher
     extend ActiveSupport::Concern
 
     module ClassMethods
-      def robot_validate(*params)
+      def rc_validate(*params)
         @@rc_params = params
 
         self.class_eval do
