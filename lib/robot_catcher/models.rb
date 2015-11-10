@@ -1,9 +1,9 @@
 module RobotCatcher
-  module Modals
+  module Models
     extend ActiveSupport::Concern
 
     module ClassMethods
-      def rc_validate(*params)
+      def robot_catch(*params)
         @@rc_params = params
 
         self.class_eval do
@@ -52,4 +52,4 @@ module RobotCatcher
   end
 end
 
-ActiveRecord::Base.send :include, RobotCatcher::Modals
+ActiveRecord::Base.send :include, RobotCatcher::Models

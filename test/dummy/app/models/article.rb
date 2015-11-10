@@ -1,3 +1,3 @@
 class Article < ActiveRecord::Base
-  rc_validate :title, :text
+  robot_catch :title, :text
 end

@@ -42,7 +42,7 @@ class ArticlesController < ApplicationController
       return
     end
     
-    if @article.update(article_params)
+    if @article.update(arcticle_params)
       redirect_to @article, notice: 'Article was successfully updated.'
     else
       render :edit
