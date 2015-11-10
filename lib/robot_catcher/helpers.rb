@@ -3,16 +3,15 @@ module RobotCatcher
     class FormBuilder < ActionView::Helpers::FormBuilder 
       def initialize(object_name, object, template, options)        
         @spinner = options[:spinner]
-        super(object_name, object, template, options)
-      end
-
-      def initialize(template, options)
-        @spinner = options[:spinner]
-        @nested_child_index = {}
-        @template, @options = template, options
-        @default_options = @options ? @options.slice(:index, :namespace) : {}
-        @multipart = nil
-        @index = options[:index] || options[:child_index]
+        if object_name.nil? and object.nil?
+          @nested_child_index = {}
+          @template, @options = template, options
+          @default_options = @options ? @options.slice(:index, :namespace) : {}
+          @multipart = nil
+          @index = options[:index] || options[:child_index]
+        else
+          super(object_name, object, template, options)
+        end
       end
 
       def self.create_tagged_field(method_name)
@@ -74,7 +73,8 @@ module RobotCatcher
         end
         ip = options.delete(:ip)
 
-        timestamp = Time.now.to_i.to_s 
+        timestamp = Time.now.to_i.to_s
+        # p "To be spinned (front-end): #{timestamp}#{ip}robotcatcher"
         @spinner = Digest::MD5.hexdigest(timestamp + ip.to_s + "robotcatcher")
 
         options[:spinner] = @spinner
@@ -87,7 +87,7 @@ module RobotCatcher
         html_options[:enforce_utf8] = options.delete(:enforce_utf8) if options.has_key?(:enforce_utf8)
         html_options[:authenticity_token] = options.delete(:authenticity_token)
 
-        builder = RobotCatcher::Helpers::FormBuilder.new(self, options)
+        builder = RobotCatcher::Helpers::FormBuilder.new(nil, nil, self, options)
         content = capture(builder, &block)
         html_options[:multipart] ||= builder.multipart?
 
@@ -108,11 +108,17 @@ module RobotCatcher
     end
 
     module FormHelper
-      def rc_form_for(record, ip, *args, &block)
+      def rc_form_for(record, *args, &block)
         options = args.extract_options!
+        if !options.has_key? :ip
+          raise ArgumentError, "should include ip address"
+        end
+        ip = options.delete(:ip)
+
         options[:builder] = RobotCatcher::Helpers::FormBuilder
         
-        timestamp = Time.now.to_i.to_s 
+        timestamp = Time.now.to_i.to_s
+        # p "To be spinned (front-end): #{timestamp}#{ip}robotcatcher"
         spinner = Digest::MD5.hexdigest(timestamp + ip.to_s + "robotcatcher")
         
         options[:spinner] = spinner

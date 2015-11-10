@@ -21,10 +21,7 @@ class ArticlesController < ApplicationController
 
   # POST /articles
   def create
-    @article = Article.new(
-      :title => params[:title],
-      :text  => params[:text]
-    )
+    @article = Article.new(article_params)
 
     if @article.robot?(params, request.remote_ip)
       redirect_to @article, notice: 'Stupid robot.'
@@ -45,10 +42,7 @@ class ArticlesController < ApplicationController
       return
     end
     
-    if @article.update(
-      :title => params[:title],
-      :text  => params[:text]
-    )
+    if @article.update(article_params)
       redirect_to @article, notice: 'Article was successfully updated.'
     else
       render :edit
@@ -65,5 +59,10 @@ class ArticlesController < ApplicationController
     # Use callbacks to share common setup or constraints between actions.
     def set_article
       @article = Article.find(params[:id])
+    end
+
+    # Only allow a trusted parameter "white list" through.
+    def article_params
+      params.require(:article).permit(:title, :text)
     end
 end
