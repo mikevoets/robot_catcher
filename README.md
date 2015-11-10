@@ -50,7 +50,7 @@ Idem dito in case you want to use `form_tag` or anyother field `*_tag`:
         submit_tag
     end
 
-NB: In case of tags, only use rc_*_tag on fields (i.e. not on labels or submit).
+NB: In case of tags, only use `rc_*_tag` on fields (i.e. not on labels or submit).
 
 ### Back-end
 
@@ -97,7 +97,7 @@ use `rc_form_for` like in the example above.
 ## UPCOMING NEXT
 + Store robot catches in database
 + Configuration (e.g. for a secret that is used for hashing)
-+ More DRY
++ More [DRY](https://en.wikipedia.org/wiki/Don%27t_repeat_yourself "Don't Repeat Yourself")
 
 ### To be considered
 + Random order on spinner hasher
