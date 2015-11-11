@@ -8,7 +8,7 @@ Gem::Specification.new do |s|
   s.name        = "robot_catcher"
   s.version     = RobotCatcher::VERSION
   s.authors     = ["Mike Voets"]
-  s.email       = ["mike@jupiter.no"]
+  s.email       = ["mwhg.voets@gmail.com"]
   s.homepage    = "None"
   s.summary     = "Form plugin for catching of bots."
   s.description = "RobotCatcher is a small form plugin that uses several kinds of hashing to consider whether a form has been filled out by a bot or a human being. "
