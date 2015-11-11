@@ -2,7 +2,7 @@ module RobotCatcher
   module Models
     extend ActiveSupport::Concern
 
-    included do 
+    module ClassMethods
       def robot_catch(*params)
         @@rc_params = params
 
