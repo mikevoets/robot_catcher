@@ -57,93 +57,97 @@ module RobotCatcher
         #     end                                    # end
         #   RUBY_EVAL
         # end
-      end
+      
+        def rc_form_tag(url_for_options = {}, options = {}, &block)
+          if !options.has_key? :ip
+            raise ArgumentError, "should include ip address"
+          end
+          ip = options.delete(:ip)
 
-      def rc_form_tag(url_for_options = {}, options = {}, &block)
-        if !options.has_key? :ip
-          raise ArgumentError, "should include ip address"
-        end
-        ip = options.delete(:ip)
+          timestamp = Time.now.to_i.to_s
+          # p "To be spinned (front-end): #{timestamp}#{ip}robotcatcher"
+          @spinner = Digest::MD5.hexdigest(timestamp + ip.to_s + "robotcatcher")
 
-        timestamp = Time.now.to_i.to_s
-        # p "To be spinned (front-end): #{timestamp}#{ip}robotcatcher"
-        @spinner = Digest::MD5.hexdigest(timestamp + ip.to_s + "robotcatcher")
+          options[:spinner] = @spinner
 
-        options[:spinner] = @spinner
+          html_options = options[:html] ||= {}
 
-        html_options = options[:html] ||= {}
+          html_options[:data]   = options.delete(:data)   if options.has_key?(:data)
+          html_options[:remote] = options.delete(:remote) if options.has_key?(:remote)
+          html_options[:method] = options.delete(:method) if options.has_key?(:method)
+          html_options[:enforce_utf8] = options.delete(:enforce_utf8) if options.has_key?(:enforce_utf8)
+          html_options[:authenticity_token] = options.delete(:authenticity_token)
 
-        html_options[:data]   = options.delete(:data)   if options.has_key?(:data)
-        html_options[:remote] = options.delete(:remote) if options.has_key?(:remote)
-        html_options[:method] = options.delete(:method) if options.has_key?(:method)
-        html_options[:enforce_utf8] = options.delete(:enforce_utf8) if options.has_key?(:enforce_utf8)
-        html_options[:authenticity_token] = options.delete(:authenticity_token)
+          builder = RobotCatcher::Helpers::FormBuilder.new(nil, nil, self, options)
+          content = capture(builder, &block)
+          html_options[:multipart] ||= builder.multipart?
 
-        builder = RobotCatcher::Helpers::FormBuilder.new(nil, nil, self, options)
-        content = capture(builder, &block)
-        html_options[:multipart] ||= builder.multipart?
-
-        html_options = html_options_for_form(url_for_options, html_options)
-        
-        if block_given?
-          output = form_tag_html(html_options)
-          output.safe_concat(hidden_field_tag(:timestamp, timestamp))
-          output.safe_concat(hidden_field_tag(:spinner, @spinner))
-          output << content
-          output.safe_concat("</form>")
-        else
-          output = form_tag_html(html_options)
-          output.safe_concat(hidden_field_tag(:timestamp, timestamp))
-          output.safe_concat(hidden_field_tag(:spinner, @spinner))
+          html_options = html_options_for_form(url_for_options, html_options)
+          
+          if block_given?
+            output = form_tag_html(html_options)
+            output.safe_concat(hidden_field_tag(:timestamp, timestamp))
+            output.safe_concat(hidden_field_tag(:spinner, @spinner))
+            output << content
+            output.safe_concat("</form>")
+          else
+            output = form_tag_html(html_options)
+            output.safe_concat(hidden_field_tag(:timestamp, timestamp))
+            output.safe_concat(hidden_field_tag(:spinner, @spinner))
+          end
         end
       end
     end
 
     module FormHelper
-      def rc_form_for(record, *args, &block)
-        options = args.extract_options!
-        if !options.has_key? :ip
-          raise ArgumentError, "should include ip address"
+      extend ActiveSupport::Concern
+
+      included do
+        def rc_form_for(record, *args, &block)
+          options = args.extract_options!
+          if !options.has_key? :ip
+            raise ArgumentError, "should include ip address"
+          end
+          ip = options.delete(:ip)
+          
+          timestamp = Time.now.to_i.to_s
+          # p "To be spinned (front-end): #{timestamp}#{ip}robotcatcher"
+          spinner = Digest::MD5.hexdigest(timestamp + ip.to_s + "robotcatcher")
+          
+          options[:spinner] = spinner
+
+          raise ArgumentError, "Missing block" unless block_given?
+          html_options = options[:html] ||= {}
+
+          case record
+          when String, Symbol
+            object_name = record
+            object      = nil
+          else
+            object      = record.is_a?(Array) ? record.last : record
+            raise ArgumentError, "First argument in form cannot contain nil or be empty" unless object
+            object_name = options[:as] || object.class.name.downcase
+            apply_form_for_options!(record, options)
+          end
+
+          html_options[:data]   = options.delete(:data)   if options.has_key?(:data)
+          html_options[:remote] = options.delete(:remote) if options.has_key?(:remote)
+          html_options[:method] = options.delete(:method) if options.has_key?(:method)
+          html_options[:enforce_utf8] = options.delete(:enforce_utf8) if options.has_key?(:enforce_utf8)
+          html_options[:authenticity_token] = options.delete(:authenticity_token)
+
+          builder = RobotCatcher::Helpers::FormBuilder.new(object_name, object, self, options)
+          content = capture(builder, &block)
+          html_options[:multipart] ||= builder.multipart?
+
+          html_options = html_options_for_form(options[:url] || {}, html_options)
+          
+          output = form_tag_html(html_options)
+          output.safe_concat(hidden_field_tag(:timestamp, timestamp))
+          output.safe_concat(hidden_field_tag(:spinner, spinner))
+          output << content
+          output.safe_concat("</form>")
         end
-        ip = options.delete(:ip)
-        
-        timestamp = Time.now.to_i.to_s
-        # p "To be spinned (front-end): #{timestamp}#{ip}robotcatcher"
-        spinner = Digest::MD5.hexdigest(timestamp + ip.to_s + "robotcatcher")
-        
-        options[:spinner] = spinner
-
-        raise ArgumentError, "Missing block" unless block_given?
-        html_options = options[:html] ||= {}
-
-        case record
-        when String, Symbol
-          object_name = record
-          object      = nil
-        else
-          object      = record.is_a?(Array) ? record.last : record
-          raise ArgumentError, "First argument in form cannot contain nil or be empty" unless object
-          object_name = options[:as] || object.class.name.downcase
-          apply_form_for_options!(record, options)
-        end
-
-        html_options[:data]   = options.delete(:data)   if options.has_key?(:data)
-        html_options[:remote] = options.delete(:remote) if options.has_key?(:remote)
-        html_options[:method] = options.delete(:method) if options.has_key?(:method)
-        html_options[:enforce_utf8] = options.delete(:enforce_utf8) if options.has_key?(:enforce_utf8)
-        html_options[:authenticity_token] = options.delete(:authenticity_token)
-
-        builder = RobotCatcher::Helpers::FormBuilder.new(object_name, object, self, options)
-        content = capture(builder, &block)
-        html_options[:multipart] ||= builder.multipart?
-
-        html_options = html_options_for_form(options[:url] || {}, html_options)
-        
-        output = form_tag_html(html_options)
-        output.safe_concat(hidden_field_tag(:timestamp, timestamp))
-        output.safe_concat(hidden_field_tag(:spinner, spinner))
-        output << content
-        output.safe_concat("</form>")
       end
     end
 
