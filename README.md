@@ -17,7 +17,7 @@ Or in your gem specification file:
 
     Gem::Specification.new do |s|
         ...
-        s.add_dependency 'robot_catcher', '0.0.2'
+        s.add_dependency 'robot_catcher'
 
 After running `bundle install`, RobotCatcher's functionality will be available in your 
 project.
