@@ -11,7 +11,7 @@ Prerequisites:
 
 Installation is simple! Add this line to your application's Gemfile:
 
-    gem 'robot_catcher', git: 'git://github.com/mikevoets/robot_catcher.git'
+    gem 'robot_catcher'
 
 Or in your gem specification file:
 
