@@ -105,6 +105,7 @@ use `rc_form_for` like in the example above.
 ## UPCOMING NEXT
 + Store robot catches in database
 + Configuration (e.g. for a secret that is used for hashing)
++ Better usage of concerns
 + More [DRY](https://en.wikipedia.org/wiki/Don%27t_repeat_yourself "Don't Repeat Yourself")
 
 ### To be considered
