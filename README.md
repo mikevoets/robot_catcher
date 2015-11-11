@@ -13,6 +13,12 @@ Installation is simple! Add this line to your application's Gemfile:
 
     gem 'robot_catcher', git: 'git://github.com/mikevoets/robot_catcher.git'
 
+Or in your gem specification file:
+
+    Gem::Specification.new do |s|
+        ...
+        s.add_dependency 'robot_catcher', '0.0.2'
+
 After running `bundle install`, RobotCatcher's functionality will be available in your 
 project.
 
@@ -63,6 +69,7 @@ is that the model class is a child of ActiveRecord::Base.
 
     class Article < ActiveRecord::Base
 		robot_catch :title, :text
+        ...
 	end
 
 #### In the controller
@@ -77,14 +84,14 @@ spinner, timestamp, etc.) that the robot catcher checks. See the example below.
 	    @article = Article.new(params[:article])
 
 	    if @article.robot?(params, request.remote_ip)
-	      redirect_to @article, notice: 'Stupid robot.'
-	      return
+            redirect_to @article, notice: 'Stupid robot.'
+            return
 	    end
 
 	    if @article.save
-	      redirect_to @article, notice: 'Article was successfully created.'
+            redirect_to @article, notice: 'Article was successfully created.'
 	    else
-	      render :new
+            render :new
 	    end
   	end
 
