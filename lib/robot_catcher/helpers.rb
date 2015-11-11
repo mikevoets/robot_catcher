@@ -3,20 +3,12 @@ module RobotCatcher
     class FormBuilder < ActionView::Helpers::FormBuilder 
       def initialize(object_name, object, template, options)        
         @spinner = options[:spinner]
-        if object_name.nil? and object.nil?
-          @nested_child_index = {}
-          @template, @options = template, options
-          @default_options = @options ? @options.slice(:index, :namespace) : {}
-          @multipart = nil
-          @index = options[:index] || options[:child_index]
-        else
-          super(object_name, object, template, options)
-        end
+        super(object_name, object, template, options, nil)
       end
 
       def self.create_tagged_field(method_name)
         define_method(method_name) do |label, *args|
-          if method_name.eql? :label
+          if method_name.eql? "label"
             super(label, *args)
           else
             hash_tag = Digest::MD5.hexdigest(label.to_s + @spinner + "robotcatcher")
@@ -114,8 +106,6 @@ module RobotCatcher
           raise ArgumentError, "should include ip address"
         end
         ip = options.delete(:ip)
-
-        options[:builder] = RobotCatcher::Helpers::FormBuilder
         
         timestamp = Time.now.to_i.to_s
         # p "To be spinned (front-end): #{timestamp}#{ip}robotcatcher"
@@ -133,8 +123,8 @@ module RobotCatcher
         else
           object      = record.is_a?(Array) ? record.last : record
           raise ArgumentError, "First argument in form cannot contain nil or be empty" unless object
-          object_name = options[:as] || model_name_from_record_or_class(object).param_key
-          apply_form_for_options!(record, object, options)
+          object_name = options[:as] || object.class.name.downcase
+          apply_form_for_options!(record, options)
         end
 
         html_options[:data]   = options.delete(:data)   if options.has_key?(:data)
@@ -143,7 +133,7 @@ module RobotCatcher
         html_options[:enforce_utf8] = options.delete(:enforce_utf8) if options.has_key?(:enforce_utf8)
         html_options[:authenticity_token] = options.delete(:authenticity_token)
 
-        builder = instantiate_builder(object_name, object, options)
+        builder = RobotCatcher::Helpers::FormBuilder.new(object_name, object, self, options)
         content = capture(builder, &block)
         html_options[:multipart] ||= builder.multipart?
 

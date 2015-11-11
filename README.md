@@ -7,7 +7,7 @@ RobotCatcher makes your forms smarter and keeps bots away.
 Prerequisites:
 + Ruby (built with for example rbenv and ruby-build)
 + Bundle
-+ A Rails application
++ A Rails application (Rails 3.2.22)
 
 Installation is simple! Add this line to your application's Gemfile:
 
