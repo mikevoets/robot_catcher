@@ -13,14 +13,17 @@ Installation is simple! Add this line to your application's Gemfile:
 
     gem 'robot_catcher'
 
-Or in your gem specification file:
+Or in your gem specification (gemspec) file:
 
     Gem::Specification.new do |s|
         ...
         s.add_dependency 'robot_catcher'
 
 After running `bundle install`, RobotCatcher's functionality will be available in your 
-project.
+project. 
+
+NB: Remember to `require 'robot_catcher` manually in case RobotCatcher is a 
+depedency of your engine, or `require` it in the library file of your engine.
 
 ## DESCRIPTION
 
@@ -58,6 +61,18 @@ Idem dito in case you want to use `form_tag` or anyother field `*_tag`:
 
 NB: In case of tags, only use tags helper methods on fields (i.e. not on 
 labels or submit).
+
+In special cases, especially when mixing html and erb, you might want to 
+generate a hash input manually. Important: the label in `rc_hash_tag` should
+correspond to the `name` attribute's value in the following input tag:
+
+    <%= rc_form_tag('/articles', ip: request.remote_ip) do %>
+        <label for="title">Title</label>
+        <%= rc_hash_tag 'title' %>
+        <input id="title" type="text" name="title"></input>
+        
+        ...
+    <% end %>
 
 ### Back-end
 
