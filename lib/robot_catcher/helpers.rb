@@ -1,5 +1,8 @@
 module RobotCatcher
   module Helpers
+    class SpinnerError < StandardError
+    end
+
     class FormBuilder < ActionView::Helpers::FormBuilder 
       def initialize(object_name, object, template, options)        
         @spinner = options[:spinner]
@@ -36,11 +39,15 @@ module RobotCatcher
                                 :rc_datetime_local_field_tag, :rc_month_field_tag, :rc_week_field_tag,
                                 :rc_url_field_tag, :rc_email_field_tag, :rc_number_field_tag]
 
+        def rc_hash_tag(label)
+          raise(SpinnerError.new, "Form has not been initialized properly! (use rc_form_tag)") if @spinner.nil? 
+          hash_tag = Digest::MD5.hexdigest(label.to_s + @spinner + "robotcatcher")
+          text_field_tag(hash_tag, nil, :style=>"display:none")
+        end
+
         def self.create_tagged_field_tag(method_name, parent_method)
           define_method(method_name) do |label, *args|
-            hash_tag = Digest::MD5.hexdigest(label.to_s + @spinner + "robotcatcher")
-            text_field_tag(hash_tag, nil, :style=>"display:none") + 
-             self.send(parent_method, label, *args)
+            rc_hash_tag(label) + self.send(parent_method, label, *args)
           end
         end
             
