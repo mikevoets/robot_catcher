@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    robot_catcher (0.1.1)
+    robot_catcher (0.1.2)
       rails (~> 3.2.22)
 
 GEM
